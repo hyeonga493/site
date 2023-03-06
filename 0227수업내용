@@ -1,0 +1,363 @@
+https://digiconfactory.tistory.com/entry/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%B2%88%EC%97%AD%EA%B8%B0-googletrans-%EB%AA%A8%EB%93%88-%EB%AC%B4%EB%A3%8C-%EC%82%AC%EC%9A%A9-2021
+
+> google trans 설치
+pip install googletrans==4.0.0-rc1
+
+> 코드 복사하기
+import googletrans
+from googletrans import Translator
+
+# print(googletrans.LANGUAGES)
+
+text1 = "Hello welcome to my website!"
+
+tr = Translator()
+#_ 객체 생성(번역가)
+print(tr.detect(text1))
+
+trans1 = tr.translate(text1, src='en', dest='ja')
+#_ 영어를 일본어로 번역
+trans1 = tr.translate(text1, src='en', dest='ko')
+#_ 영어를 한국어로 번역
+print("English to Japanese: ", trans1.text)
+
+ > 밑줄 > 못알아 보겠다. 
+
+ >> 실행
+    : English to Japanese:  こんにちは私のウェブサイトへようこそ！
+
+
+
+
+<acc>  >  'views.py'
+'views.py'
+=====
+def index(request):
+    d = {1:'one', 2:'two', 3:'three'}
+    context = {
+        "d" : d
+    }
+    return render(request, "acc/index.html", context)
+
+
+
+
+
+<templates>  >  'acc'  >  'index.html'
+'index.html'
+=====
+{% extends 'base.html' %}
+{% block con %}
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">WELCOME TO MY WEBSITE!</h1>
+            <p class="col-md-8 fs-4">Hello everyone! My first django project 💥 </p>
+        </div>
+    </div>
+    {{d}}<br>   #= {1: 'one', 2: 'two', 3: 'three'}
+    {% for i in d %}
+        {{i}}   #= 1 2 3
+    {% endfor %}
+    <br>
+    {% for key, value in d.items %}
+        {{key}} {{value}}   #= 1 one 2 two 3 three
+    {% endfor %}
+{% endblock %}
+
+
+
+
+
+
+
+1. trans 앱생성
+2. config > 'urls.py' 경로 설정
+3. trans > 'urls.py' 경로 설정
+4. trans > 'views.py' index 함수 설정
+5. templates > trans > 'index.html' 작성
+'index.html'
+=====
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>SH TRANS</b></h1>
+
+    <div class="row mt-5">
+    #_ 제목과의 간격 mt-5
+        <div class="col-sm-5">
+        #_ 가로 간격 sm-5
+            <textarea class="form-control" style="height: 250px;" placeholder="번역할 문장을 입력해주세요"></textarea>
+            #_ 입력받을 곳
+        </div>
+        <div class="col-sm-2" style="margin:auto">
+        #_ 버튼 위치 위아래 가운데 정렬 margin:aduto 
+            <select class="form-select">
+                <option></option>
+            </select>
+
+            <button class="btn btn-dark mt-4 mb-4" style="width:100%;">번역</button>
+
+            <select class="form-select">
+                <option></option>
+            </select>
+
+        </div>
+        <div class="col-sm-5">
+            <textarea class="form-control" style="height: 250px;" disabled></textarea>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+>>>>>
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>SH TRANS</b></h1>
+
+    <div class="row mt-5">
+        <div class="col-sm-5">
+            <textarea class="form-control" style="height: 250px;" placeholder="번역할 문장을 입력해주세요"></textarea>
+        </div>
+        <div class="col-sm-2" style="margin:auto">
+            <select class="form-select">
+                {% for code, name in ndict.items %}
+                    <option value="{{code}}">{{name |upper}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-dark mt-4 mb-4" style="width:100%;">번역</button>
+
+            <select class="form-select">
+                {% for code, name in ndict.items %}
+                    <option value="{{code}}">{{name |upper}}</option>
+                {% endfor %}
+            </select>
+
+        </div>
+        <div class="col-sm-5">
+            <textarea class="form-control" style="height: 250px;" disabled></textarea>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+
+views.py
+=====
+from django.shortcuts import render
+import googletrans
+
+
+def index(request):
+    
+    
+    context={
+        "ndict" : googletrans.LANGUAGES,
+        
+    }
+    return render(request, 'tr/index.html',context)
+
+
+
+
+- 값 전송 <form>
+'index.html'
+=====
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>SH TRANS</b></h1>
+    <form>
+        <div class="row mt-5">
+            <div class="col-sm-5">
+                <textarea class="form-control" style="height: 250px;" placeholder="번역할 문장을 입력해주세요"></textarea>
+            </div>
+            <div class="col-sm-2" style="margin:auto">
+                <select class="form-select" name='fr'>
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}">{{name |upper}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-dark mt-4 mb-4" style="width:100%;">번역</button>
+
+                <select class="form-select" name='to'>
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}">{{name |upper}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="col-sm-5">
+                <textarea class="form-control" style="height: 250px;" disabled></textarea>
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}
+
+
+
+
+'views.py'
+=====
+
+def index(request):
+    
+    context={
+        "ndict" : googletrans.LANGUAGES,
+    }
+    
+    bf = request.GET.get('bf','')
+    if bf : 
+        fr = request.GET.get('fr','')
+        to = request.GET.get('to','')
+        trans = googletrans.Translator()
+        #_ 번역가 생성
+        after = trans.translate(bf, src=fr, dest=to)
+        
+        context.update = {
+            "bf" : bf,
+            #_ 번역한 뒤에 유지
+            "fr" : fr,
+            'to' : to,
+            'af' : after.text,
+            #_ "ndict" : googletrans.LANGUAGES,
+            #_ 중복되지만 넘어간다
+        }
+        
+    return render(request, 'tr/index.html',context)
+
+
+
+
+ - 최종
+ 'views.py'
+ =====
+from django.shortcuts import render
+import googletrans
+
+def index(request):
+    
+    bf = request.GET.get('bf','')
+    fr = request.GET.get('fr','')
+    to = request.GET.get('to','')
+    context={
+        "ndict" : googletrans.LANGUAGES,
+        "fr" : fr,
+        'to' : to,
+    }
+    
+    if bf : 
+        
+        trans = googletrans.Translator()
+        after = trans.translate(bf, src=fr, dest=to)
+        
+        context.update({
+            "bf" : bf,
+            'af' : after.text
+        })
+        
+    return render(request, 'tr/index.html',context)
+
+
+
+'''
+def index(request):
+    
+    context={
+        "ndict" : googletrans.LANGUAGES,
+    }
+    
+    bf = request.GET.get('bf','')
+    if bf : 
+        fr = request.GET.get('fr','')
+        to = request.GET.get('to','')
+        trans = googletrans.Translator()
+        #_ 번역가 생성
+        after = trans.translate(bf, src=fr, dest=to)
+        
+        context.update = ({
+            "bf" : bf,
+            #_ 번역한 뒤에 유지
+            "fr" : fr,
+            'to' : to,
+            'af' : after,
+            #_ "ndict" : googletrans.LANGUAGES,
+            #_ 중복되지만 넘어간다
+        })
+        
+    return render(request, 'tr/index.html',context)'''
+
+
+
+
+
+
+
+'index.html'
+=====
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>SH TRANS</b></h1>
+    <form>
+        <div class="row mt-5">
+            <div class="col-sm-5">
+                <textarea class="form-control" style="height: 250px;" placeholder="번역할 문장을 입력해주세요">{{bf}}</textarea>
+            </div>
+            <div class="col-sm-2" style="margin:auto">
+                <select class="form-select" name='fr'>
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}" {% if fr == code %} selected {% endif %}>{{name |upper}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-dark mt-4 mb-2" style="width:100%;">번역</button>
+                <a href="{% url 'tr:index'%}?bf={{af}}&fr={{to}}&to={{fr}}"  class="btn btn-dark mt-2 mb-4" style="width:100%;">CHANGE</a>
+
+                <select class="form-select" name='to'>
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}" {% if to == code %} selected {% endif %}>{{name |upper}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="col-sm-5">
+                <textarea class="form-control" style="height: 250px;" disabled>{{af}}</textarea>
+                #_ 값이 안나오는 이유
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}
+
+
+
+
+
+
+<a href='/media/noimage.png' download>여기</a>
+    #_ 이미지 파일 다운 가능
+
+
+
+gtts
+https://pypi.org/project/gTTS/ (읽어주는 것)
+
+
+
+> pip install gTTS
+=====
+from gtts import gTTS
+
+tts = gTTS('hello', lang='en')
+tts.save('hello.mp3')
+tts = gTTS('안녕하세요', lang='ko')
+tts.save('hello.mp3')

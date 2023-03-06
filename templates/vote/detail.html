@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block con %}
+<h1><b>{{tp.subject}}</b></h1>
+<div class="text-end">
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#book">
+        Book
+    </button>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-9">
+        <textarea class="form-control" style="height:250px" disabled>{{tp.content}}</textarea>
+    </div>
+    <div class="col-sm-3">
+        <img src="{{ tp.maker.getpic }}" width="100%">
+        <div class="mt-3 text-center">
+            <h4>made by <b>{{tp.maker}}</b></h4>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+{% load mathfilters %}
+{% if user in tp.voter.all %}
+    <div class="row mt-5">
+        {% for i in ch %}
+            <div class="col-sm-4">
+                <label class="form-check-label">
+                    <h4><b>{{i.name}}</b></h4>
+                </label>
+                <div class="progress mt-3 mb-3" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ i.choicer.count|div:tp.voter.count|mul:100|floatformat:2 }}%">
+                        {{ i.choicer.count|div:tp.voter.count|mul:100|floatformat:2 }}
+                        <!--선택한 사람의 수 / 투표한 사람의 수-->
+                    </div>
+                </div>
+                <textarea class="form-control mt-3" style="height: 100px;" disabled>{{i.comment}}</textarea>
+            </div>
+        {% endfor %}
+        
+    </div>
+    <div class="text-end mt-4">
+        <a href="{% url 'vote:cancle' tp.id %}" class="btn btn-danger">무르기</a>
+        <!--무르기-->
+        <a href="{% url 'vote:index' %}"><button class="btn btn-secondary" type='button'>Main</button></a>
+    </div>
+{% else %}
+    <form method='post' action="{% url 'vote:vote' tp.id %}">
+        {% csrf_token %}
+        <div class="row mt-5">
+            {% for i in ch %}
+                <div class="col-sm-4">
+                    <input type="radio" name='cho' value="{{i.id}}"class="form-check-input">
+                    <label class="form-check-label">
+                        <h4><b>{{i.name}}</b></h4>
+                    </label>
+                    <textarea name='com' class="form-control mt-3" style="height: 100px;" disabled>{{i.comment}}</textarea>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-end mt-4">
+            <button class="btn btn-dark">Vote</button>
+            <a href="{% url 'vote:index' %}"><button class="btn btn-secondary" type='button'>Main</button></a>
+        </div>
+    </form>
+{% endif %}
+
+    <!-- Modal -->
+    <form method='post' action={% url 'book:create' %}>
+        {% csrf_token %}
+        <div class="modal fade" id="book" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><b>즐겨찾기 추가</b></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea name='scon' class="form-control" placeholder="사이트를 간략하게 설명해주세요" style="height: 100px;"></textarea>
+                    <input type='hidden' name='sname' value='[VOTE]::{{ tp.subject }}'>
+                    <input type='hidden' name='surl' value="{{ request.path }}"> 
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancle</button>
+                <button class="btn btn-warning">Create</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

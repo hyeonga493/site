@@ -1,0 +1,22 @@
+북마크 기능
+
+book 앱 생성
+'views'
+    index
+    create
+vote/board에도 추가 작성
+hidden type
+
+
+
+TTS
+text to speech
+문자열 입력시, 문자 읽어주는 서비스
+
+
+tts 앱 생성
+경로 설정
+index 경로 설정
+함수 생성
+페이지 작성
+

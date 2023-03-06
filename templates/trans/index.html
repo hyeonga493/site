@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>SH TRANS</b></h1>
+
+    <div class="row mt-5">
+        <form>
+            <div class="col-sm-5">
+                <textarea name='bf' class="form-control" name='bf' style="height: 250px;" placeholder="번역할 문장을 입력해주세요">{{bf}}</textarea><br>
+            </div>
+            
+            <div class="col-sm-2" style="margin:auto">
+                <select name='to' class="form-select" name="fr">
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}" {% if fr == code %} selected {% endif %}>{{name|upper}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-dark mt-4 mb-4" style="width:100%;">번역</button>
+                <a href="{% url 'trans:index'%}?bf={{af}}&fr={{to}}&to={{fr}}"  class="btn btn-dark mt-2 mb-4" style="width:100%;">CHANGE</a>
+                <select class="form-select" name="to">
+                    {% for code, name in ndict.items %}
+                        <option value="{{code}}" {% if to == code %} selected {% endif %}>{{name|upper}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="col-sm-5">
+                <textarea name='to' class="form-control" style="height: 250px;" disabled>{{af}}</textarea>
+            </div>
+        </form>
+    </div>
+    {% if af %}
+        <form method='post' action={% url 'tts:index'%}>
+            {% csrf_token %}
+            <input type='hidden' name='bf' value="{{af}}">
+            <input type='hidden' name='to' value="{{to}}">
+            <div class='text-end mt-4'>
+                <button class='btn btn-dark'>TTS</button>
+            </div>
+        <form>
+    {% endif %}
+
+{% endblock %}
